@@ -1,19 +1,24 @@
 package utez.edu.mx
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -27,6 +32,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var tvOrientation: TextView
     private lateinit var tvPosition: TextView
     private lateinit var compassView: ImageView
+    private lateinit var btnSaveData: Button
+    private lateinit var btnShowChanges: Button  // Nuevo botón para mostrar cambios
+
+    private var altitude: Double? = null
+    private var latitude: Double? = null
+    private var longitude: Double? = null
+
+    private lateinit var database: DatabaseReference  // Firebase reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +50,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         tvOrientation = findViewById(R.id.tv_orientation)
         tvPosition = findViewById(R.id.tv_position)
         compassView = findViewById(R.id.compassView)
+        btnSaveData = findViewById(R.id.btn_save_data)
+        btnShowChanges = findViewById(R.id.btn_mostrar_cambios)  // Inicialización del botón de mostrar cambios
+
+        // Inicializar Firebase Database
+        database = FirebaseDatabase.getInstance().reference
 
         // Cliente de ubicación
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -51,6 +69,19 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         val magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
         gravitySensor?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) }
         magneticSensor?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) }
+
+        // Acción al presionar el botón "Guardar Datos"
+        btnSaveData.setOnClickListener {
+            saveDataToFirebase()  // Guardar datos en Firebase
+            val intent = Intent(this, MostrarCambiosActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Acción al presionar el botón "Mostrar Cambios"
+        btnShowChanges.setOnClickListener {
+            val intent = Intent(this, MostrarCambiosActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun checkPermissions() {
@@ -65,10 +96,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
-                    val altitude = location.altitude
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-                    tvAltitude.text = "Altitud: ${altitude.roundToInt()} m"
+                    altitude = location.altitude
+                    latitude = location.latitude
+                    longitude = location.longitude
+                    tvAltitude.text = "Altitud: ${altitude?.roundToInt()} m"
                     tvPosition.text = "Posición: Lat: $latitude, Lon: $longitude"
                 } else {
                     tvPosition.text = "Posición: Sin datos de ubicación"
@@ -76,6 +107,29 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             }.addOnFailureListener {
                 tvPosition.text = "Error al obtener la ubicación"
             }
+        }
+    }
+
+    // Método para guardar los datos en Firebase
+    private fun saveDataToFirebase() {
+        if (altitude != null && latitude != null && longitude != null) {
+            val data = HashMap<String, Any>()
+            data["altitud"] = altitude?.roundToInt() ?: 0
+            data["latitud"] = latitude ?: 0.0
+            data["longitud"] = longitude ?: 0.0
+            data["orientación"] = tvOrientation.text.toString()
+
+            // Guardar los datos en Firebase bajo una clave única
+            val newData = database.child("datos").push()  // "datos" es el nodo donde se almacenarán
+            newData.setValue(data)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Datos guardados correctamente en Firebase", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Error al guardar los datos en Firebase", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(this, "No hay datos disponibles para guardar", Toast.LENGTH_SHORT).show()
         }
     }
 

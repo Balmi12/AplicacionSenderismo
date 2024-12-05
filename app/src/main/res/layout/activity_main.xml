@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fondom"
@@ -65,5 +64,42 @@
         android:src="@drawable/direccion"
         android:scaleType="centerCrop"
         android:layout_marginTop="16dp" />
+
+    <!-- Botón "Guardar datos" -->
+    <Button
+        android:id="@+id/btn_save_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Guardar datos"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center" />
+
+    <!-- Espaciador para separar los botones -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="24dp" />
+
+    <!-- Botones "Mostrar cambios" y "Mostrar mapa" -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- Botón "Mostrar cambios" -->
+        <Button
+            android:id="@+id/btn_mostrar_cambios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mostrar cambios"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Botón "Mostrar mapa" -->
+        <Button
+            android:id="@+id/btn_mostrar_mapa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mostrar mapa" />
+    </LinearLayout>
 
 </LinearLayout>
