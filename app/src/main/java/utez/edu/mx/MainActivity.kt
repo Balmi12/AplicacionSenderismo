@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var tvOrientation: TextView
     private lateinit var tvPosition: TextView
     private lateinit var compassView: ImageView
+    private lateinit var btnMostrarMapa: Button
     private lateinit var btnSaveData: Button
     private lateinit var btnShowChanges: Button  // Nuevo botón para mostrar cambios
 
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         tvOrientation = findViewById(R.id.tv_orientation)
         tvPosition = findViewById(R.id.tv_position)
         compassView = findViewById(R.id.compassView)
+        btnMostrarMapa = findViewById(R.id.btn_mostrar_mapa)
         btnSaveData = findViewById(R.id.btn_save_data)
         btnShowChanges = findViewById(R.id.btn_mostrar_cambios)  // Inicialización del botón de mostrar cambios
 
@@ -80,6 +82,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // Acción al presionar el botón "Mostrar Cambios"
         btnShowChanges.setOnClickListener {
             val intent = Intent(this, MostrarCambiosActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Acción al presionar el botón "Mostrar Mapa"
+        btnMostrarMapa.setOnClickListener {
+            val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
         }
     }

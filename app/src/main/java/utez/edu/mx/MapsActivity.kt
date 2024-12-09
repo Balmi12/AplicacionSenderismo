@@ -1,8 +1,15 @@
 package utez.edu.mx
 
+
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -17,11 +24,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private var mapTypeIndex = 0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -37,17 +47,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        enableLocation()
 
         map.uiSettings.isZoomControlsEnabled = true
         map.isBuildingsEnabled = true
         map.isTrafficEnabled = true
 
-        val mexicoCtiy = LatLng(19.432608, -99.133209)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(mexicoCtiy, 12f))
 
-        map.addMarker(MarkerOptions().position(mexicoCtiy).title("Ciudad de Mexico"))
 
         val guadalajara = LatLng(20.659698, -103.349609)
         map.addMarker(
@@ -58,6 +68,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         map.addMarker(
             MarkerOptions().position(casa).title("Casa").snippet("Casa de Orlando")
         )
+    }
+
+    private fun enableLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Permiso otorgado, obtener ubicación actual
+            map.isMyLocationEnabled = true
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    val currentLatLng = LatLng(it.latitude, it.longitude)
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                    map.addMarker(MarkerOptions().position(currentLatLng).title("Tu ubicación"))
+                }
+            }
+        }
     }
 
 

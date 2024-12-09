@@ -36,10 +36,10 @@
 
     <!-- Botón para regresar -->
     <Button
+        android:id="@+id/btn_regresar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Regresar"
-        android:onClick="onBackPressed"
         android:layout_gravity="center"
         android:layout_marginTop="20dp" />
 
