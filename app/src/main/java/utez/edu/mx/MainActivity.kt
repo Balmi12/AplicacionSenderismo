@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var compassView: ImageView
     private lateinit var btnMostrarMapa: Button
     private lateinit var btnSaveData: Button
-    private lateinit var btnShowChanges: Button  // Nuevo botón para mostrar cambios
 
     private var altitude: Double? = null
     private var latitude: Double? = null
@@ -52,8 +51,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         tvPosition = findViewById(R.id.tv_position)
         compassView = findViewById(R.id.compassView)
         btnMostrarMapa = findViewById(R.id.btn_mostrar_mapa)
-        btnSaveData = findViewById(R.id.btn_save_data)
-        btnShowChanges = findViewById(R.id.btn_mostrar_cambios)  // Inicialización del botón de mostrar cambios
+        btnSaveData = findViewById(R.id.btn_save_data) // Inicialización del botón de mostrar cambios
 
         // Inicializar Firebase Database
         database = FirebaseDatabase.getInstance().reference
@@ -75,15 +73,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // Acción al presionar el botón "Guardar Datos"
         btnSaveData.setOnClickListener {
             saveDataToFirebase()  // Guardar datos en Firebase
-            val intent = Intent(this, MostrarCambiosActivity::class.java)
-            startActivity(intent)
         }
 
-        // Acción al presionar el botón "Mostrar Cambios"
-        btnShowChanges.setOnClickListener {
-            val intent = Intent(this, MostrarCambiosActivity::class.java)
-            startActivity(intent)
-        }
 
         // Acción al presionar el botón "Mostrar Mapa"
         btnMostrarMapa.setOnClickListener {
