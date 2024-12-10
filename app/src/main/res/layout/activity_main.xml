@@ -5,7 +5,7 @@
     android:background="@drawable/fondom"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="24dp">
+    android:padding="15dp">
 
     <!-- Altitud -->
     <TextView
@@ -65,28 +65,18 @@
         android:scaleType="centerCrop"
         android:layout_marginTop="16dp" />
 
-    <!-- Botón "Guardar datos" -->
-    <Button
-        android:id="@+id/btn_save_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Guardar datos"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center" />
 
     <!-- Espaciador para separar los botones -->
     <Space
         android:layout_width="match_parent"
         android:layout_height="24dp" />
 
-    <!-- Botones "Mostrar cambios" y "Mostrar mapa" -->
+    <!-- Botones "Mostrar mapa" y "Guardar datos" -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center">
-
-        <!-- Botón "Mostrar cambios" -->
 
 
         <!-- Botón "Mostrar mapa" -->
@@ -94,7 +84,27 @@
             android:id="@+id/btn_mostrar_mapa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mostrar mapa" />
+            android:text="Mostrar mapa"
+            android:layout_marginRight="10dp" />
+
+        <!-- Botón "Guardar datos" -->
+        <Button
+            android:id="@+id/btn_save_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Guardar datos"
+            android:layout_marginLeft="10dp" />
     </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="24dp" />
+
+    <Button
+        android:id="@+id/btnCerrarSesion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cerrar Sesion"
+        android:layout_marginRight="10dp" />
 
 </LinearLayout>

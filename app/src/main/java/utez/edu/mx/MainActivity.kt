@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var compassView: ImageView
     private lateinit var btnMostrarMapa: Button
     private lateinit var btnSaveData: Button
+    private lateinit var btnCerrarSesion: Button
 
     private var email: String? = null
     private var altitude: Double? = null
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         compassView = findViewById(R.id.compassView)
         btnMostrarMapa = findViewById(R.id.btn_mostrar_mapa)
         btnSaveData = findViewById(R.id.btn_save_data) // Inicialización del botón de mostrar cambios
+        btnCerrarSesion = findViewById(R.id.btnCerrarSesion)
 
         val cosa = intent.getStringExtra("email")
         email = cosa
@@ -85,6 +87,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         btnMostrarMapa.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
             intent.putExtra("email", cosa)
+            startActivity(intent)
+        }
+
+
+        btnCerrarSesion.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }

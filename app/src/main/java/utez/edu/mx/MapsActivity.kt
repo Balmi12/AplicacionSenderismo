@@ -1,6 +1,7 @@
 package utez.edu.mx
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var mapTypeIndex = 0
 
+    private var email: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -38,6 +41,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val btnVolver = findViewById<Button>(R.id.btnVolver)
+
+        val cosa = intent.getStringExtra("email")
+        email = cosa
 
         // Inicializar Firebase
         database = FirebaseDatabase.getInstance().getReference("datos")
@@ -51,6 +59,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         findViewById<Button>(R.id.btnChangeMapType).setOnClickListener {
             changeMapType()
         }
+
+        btnVolver.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("email", cosa)
+            startActivity(intent)
+        }
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -66,7 +81,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun enableLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             // Permiso otorgado, habilitar ubicación
             map.isMyLocationEnabled = true
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -102,7 +121,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     val altitude = locationSnapshot.child("altitud").getValue(Int::class.java)
                     val latitude = locationSnapshot.child("latitud").getValue(Double::class.java)
                     val longitude = locationSnapshot.child("longitud").getValue(Double::class.java)
-                    val orientation = locationSnapshot.child("orientación").getValue(String::class.java)
+                    val orientation =
+                        locationSnapshot.child("orientación").getValue(String::class.java)
 
                     // Validar y añadir el marcador
                     if (latitude != null && longitude != null && email == cosa) {
