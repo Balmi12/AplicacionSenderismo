@@ -94,27 +94,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun loadMarkersFromFirebase() {
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                val cosa = intent.getStringExtra("email")
+
                 for (locationSnapshot in snapshot.children) {
                     // Leer los valores de la estructura
+                    val email = locationSnapshot.child("email").getValue(String::class.java)
                     val altitude = locationSnapshot.child("altitud").getValue(Int::class.java)
                     val latitude = locationSnapshot.child("latitud").getValue(Double::class.java)
                     val longitude = locationSnapshot.child("longitud").getValue(Double::class.java)
                     val orientation = locationSnapshot.child("orientación").getValue(String::class.java)
 
                     // Validar y añadir el marcador
-                    if (latitude != null && longitude != null) {
+                    if (latitude != null && longitude != null && email == cosa) {
                         val position = LatLng(latitude, longitude)
                         val markerTitle = "Altitud: $altitude, Orientación: $orientation"
                         map.addMarker(MarkerOptions().position(position).title(markerTitle))
-                    }
-                }
-
-                // Mover cámara al primer marcador si existen ubicaciones
-                snapshot.children.firstOrNull()?.let {
-                    val firstLat = it.child("latitud").getValue(Double::class.java)
-                    val firstLng = it.child("longitud").getValue(Double::class.java)
-                    if (firstLat != null && firstLng != null) {
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(firstLat, firstLng), 10f))
                     }
                 }
             }

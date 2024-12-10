@@ -19,6 +19,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.newSingleThreadContext
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var btnMostrarMapa: Button
     private lateinit var btnSaveData: Button
 
+    private var email: String? = null
     private var altitude: Double? = null
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -52,6 +54,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         compassView = findViewById(R.id.compassView)
         btnMostrarMapa = findViewById(R.id.btn_mostrar_mapa)
         btnSaveData = findViewById(R.id.btn_save_data) // Inicialización del botón de mostrar cambios
+
+        val cosa = intent.getStringExtra("email")
+        email = cosa
 
         // Inicializar Firebase Database
         database = FirebaseDatabase.getInstance().reference
@@ -79,6 +84,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // Acción al presionar el botón "Mostrar Mapa"
         btnMostrarMapa.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
+            intent.putExtra("email", cosa)
             startActivity(intent)
         }
     }
@@ -113,6 +119,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private fun saveDataToFirebase() {
         if (altitude != null && latitude != null && longitude != null) {
             val data = HashMap<String, Any>()
+            data["email"] = email ?: ""
             data["altitud"] = altitude?.roundToInt() ?: 0
             data["latitud"] = latitude ?: 0.0
             data["longitud"] = longitude ?: 0.0
